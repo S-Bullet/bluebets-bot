@@ -1,0 +1,24 @@
+{
+  "name": "beta_v2",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "register": "cd src; node ./registerCommands.js;",
+    "start": "cd src; node ./app.js;"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^6.0.1",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.0.3",
+    "mongoose": "^7.5.0",
+    "ms": "^2.1.3",
+    "node-schedule": "^2.1.1",
+    "url-regex": "^5.0.0",
+    "web3": "^4.2.1"
+  }
+}
