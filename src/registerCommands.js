@@ -17,10 +17,16 @@ client.once("ready", async () => {
   const commands = [];
   const promises = []
 
-  const commandsDir = `${__dirname}/commands`
+  //const commandsDir = `${__dirname}/commands`
+  const commandsDir = path.join(__dirname, 'commands');
   for (const category of readdirSync(commandsDir)) {
-    for (const file of readdirSync(`${commandsDir}/${category}`)) {
-      const command = await import(`${commandsDir}/${category}/${file}`);
+    const categoryDir = path.join(commandsDir, category);
+    //for (const file of readdirSync(`${commandsDir}/${category}`)) {
+    for (const file of readdirSync(categoryDir)) {
+      const filePath = path.join(categoryDir, file);
+      const formattedPath = `file:///${filePath.replace(/\\/g, '/')}`;
+      //const command = await import(`${commandsDir}/${category}/${file}`);
+      const command = await import(formattedPath);
       commands.push(command.slash_data);
     }
   }
