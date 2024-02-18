@@ -9,21 +9,30 @@ import {
 import { readdir } from "fs";
 import { prototypeOverwrites } from "./utils/extra_functions.js";
 import { createRequire } from "module";
-import {
-  TOKEN,
-  OWNER_ID,
-  OWNER_GUILD_ID,
-  ANNOUNCE_CHANNEL_ID,
-  TABLE_CHANNEL_ID,
-  LEADERBOARD_CHANNEL_ID,
-  DEFAULT_EMOJI,
-} from "./config.js";
+// import {
+//   TOKEN,
+//   OWNER_ID,
+//   OWNER_GUILD_ID,
+//   ANNOUNCE_CHANNEL_ID,
+//   TABLE_CHANNEL_ID,
+//   LEADERBOARD_CHANNEL_ID,
+//   DEFAULT_EMOJI,
+// } from "./config.js";
 import * as api from "./api.js"
 import * as util from "./util.js"
 import { allowGuild, getAllowedGuilds } from "./utils/allowed_guilds.js";
+import dotenv from "dotenv"
 
 const require = createRequire(import.meta.url);
 const emojis = require("./emojis.json");
+
+dotenv.config({ path : './../.env' });
+
+const TOKEN = process.env.TOKEN;
+const OWNER_GUILD_ID = process.env.OWNER_GUILD_ID;
+const ANNOUNCE_CHANNEL_ID = process.env.ANNOUNCE_CHANNEL_ID;
+const LEADERBOARD_CHANNEL_ID = process.env.LEADERBOARD_CHANNEL_ID;
+const DEFAULT_EMOJI = process.env.DEFAULT_EMOJI;
 
 const DELAY_TIME = 1 * 60 * 1000
 
@@ -153,9 +162,9 @@ function waitForSeconds(seconds) {
 }
 
 client.once('ready', async () => {
-  const guild = client.guilds.cache.get(OWNER_GUILD_ID)
+  // const guild = client.guilds.cache.get(OWNER_GUILD_ID)
   const announceChannel = client.channels.cache.get(ANNOUNCE_CHANNEL_ID)
-  const tableChannel = client.channels.cache.get(TABLE_CHANNEL_ID)
+  // const tableChannel = client.channels.cache.get(TABLE_CHANNEL_ID)
   const leaderboardChannel = client.channels.cache.get(LEADERBOARD_CHANNEL_ID)
 
   const tokens = await api.getTokens()

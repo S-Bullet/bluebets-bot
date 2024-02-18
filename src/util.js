@@ -1,6 +1,9 @@
-import {
-	OWNER_GUILD_ID
-} from "./config.js"
+// import {
+// 	OWNER_GUILD_ID
+// } from "./config.js"
+import dotenv from "dotenv"
+dotenv.config({ path : './../.env' });
+const OWNER_GUILD_ID = process.env.OWNER_GUILD_ID;
 
 export const seconds2time = (seconds) => {
 	let minutes = parseInt(seconds / 60)

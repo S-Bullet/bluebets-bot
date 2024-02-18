@@ -1,15 +1,18 @@
 import { ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { cryptoSymbolToName } from "../utils/bets.js";
-import {
-  TOKEN,
-  OWNER_ID,
-  OWNER_GUILD_ID,
-  ANNOUNCE_CHANNEL_ID,
-  TABLE_CHANNEL_ID,
-  LEADERBOARD_CHANNEL_ID,
-  DEFAULT_EMOJI,
-} from "../config.js";
+// import {
+//   TOKEN,
+//   OWNER_ID,
+//   OWNER_GUILD_ID,
+//   ANNOUNCE_CHANNEL_ID,
+//   TABLE_CHANNEL_ID,
+//   LEADERBOARD_CHANNEL_ID,
+//   DEFAULT_EMOJI,
+// } from "../config.js";
 import * as util from "../util.js"
+import dotenv from "dotenv"
+dotenv.config({ path : './../.env' });
+const TABLE_CHANNEL_ID = process.env.TABLE_CHANNEL_ID;
 
 export default {
   name: "bet",

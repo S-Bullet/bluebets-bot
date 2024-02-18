@@ -1,9 +1,14 @@
 import Web3 from "web3"
-import {
-	RPC_HTTP_PROVIDER_URL,
-	CONTRACT_ADDRESS,
-	PRIVATE_KEY,
-} from "./config.js"
+// import {
+// 	RPC_HTTP_PROVIDER_URL,
+// 	CONTRACT_ADDRESS,
+// 	PRIVATE_KEY,
+// } from "./config.js"
+import dotenv from "dotenv"
+dotenv.config({ path : './../.env' });
+const RPC_HTTP_PROVIDER_URL = process.env.RPC_HTTP_PROVIDER_URL;
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
@@ -14,8 +19,8 @@ const MAX_TOKEN_TYPE = 3
 const MAX_AMOUNT_TYPE = 3
 
 const web3 = new Web3(new Web3.providers.HttpProvider(RPC_HTTP_PROVIDER_URL))
-const senderAccount = web3.eth.accounts.wallet.add(PRIVATE_KEY)
-const betContract = new web3.eth.Contract(BET_ABI, CONTRACT_ADDRESS, { from: senderAccount[0].address })
+const ADMIN_PUBKEY = web3.eth.accounts.wallet.add(PRIVATE_KEY)[0].address
+const betContract = new web3.eth.Contract(BET_ABI, CONTRACT_ADDRESS, { from: ADMIN_PUBKEY })
 
 export const getUserBalance = async (userId) => {
 	const { account, discordName, communityId, isRegistered } = await betContract.methods.userListByDiscordName(userId).call()
@@ -195,10 +200,10 @@ export const getUserInfo = async (userAddress) => {
 
 export const startBetting = async (periodId) => {
 	try {
-		const gas = await betContract.methods.startBetting(periodId).estimateGas({ from: senderAccount[0].address });
+		const gas = await betContract.methods.startBetting(periodId).estimateGas({ from: ADMIN_PUBKEY });
 		const gasPrice = await web3.eth.getGasPrice();
 
-		await betContract.methods.startBetting(periodId).send({ from: senderAccount[0].address, gas: gas, gasPrice: gasPrice })
+		await betContract.methods.startBetting(periodId).send({ from: ADMIN_PUBKEY, gas: gas, gasPrice: gasPrice })
 
 		console.log("Bluebet log: startBetting timeType = ", periodId);
 	} catch (error) {
@@ -208,10 +213,10 @@ export const startBetting = async (periodId) => {
 
 export const stopBetting = async (periodId) => {
 	try {
-		const gas = await betContract.methods.endBetting(periodId).estimateGas({ from: senderAccount[0].address });
+		const gas = await betContract.methods.endBetting(periodId).estimateGas({ from: ADMIN_PUBKEY });
 		const gasPrice = await web3.eth.getGasPrice();
 
-		await betContract.methods.endBetting(periodId).send({ from: senderAccount[0].address, gas: gas, gasPrice: gasPrice })
+		await betContract.methods.endBetting(periodId).send({ from: ADMIN_PUBKEY, gas: gas, gasPrice: gasPrice })
 
 		console.log("Bluebet log: endBetting timeType = ", periodId);
 	} catch (error) {
@@ -221,10 +226,10 @@ export const stopBetting = async (periodId) => {
 
 export const doBetting = async (userId, periodId, tokenId, amountId, prediction) => {
 	try {
-		const gas = await betContract.methods.doBet(userId, periodId, tokenId, amountId, prediction).estimateGas({ from: senderAccount[0].address });
+		const gas = await betContract.methods.doBet(userId, periodId, tokenId, amountId, prediction).estimateGas({ from: ADMIN_PUBKEY });
 		const gasPrice = await web3.eth.getGasPrice();
 
-		betContract.methods.doBet(userId, periodId, tokenId, amountId, prediction).send({ from: senderAccount[0].address, gas: gas, gasPrice: gasPrice })
+		betContract.methods.doBet(userId, periodId, tokenId, amountId, prediction).send({ from: ADMIN_PUBKEY, gas: gas, gasPrice: gasPrice })
 
 		console.log(`Bluebet log: doBet userId=${userId}, timeType=${periodId}, tokenType=${tokenId}, amountType=${amountId}, prediction=${prediction}`);
 	} catch (error) {
