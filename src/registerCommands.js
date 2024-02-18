@@ -1,7 +1,12 @@
 import { readdirSync } from "fs";
 import { Client, GatewayIntentBits } from "discord.js";
 
-import { TOKEN, OWNER_GUILD_ID } from "./config.js";
+//import { TOKEN, OWNER_GUILD_ID } from "./config.js";
+//require('dotenv').config({ path: './../.env' });
+import dotenv from "dotenv";
+dotenv.config({ path : './../.env' });
+const TOKEN = process.env.TOKEN;
+const OWNER_GUILD_ID = process.env.OWNER_GUILD_ID;
 
 import path from "path"
 import { fileURLToPath } from "url"
