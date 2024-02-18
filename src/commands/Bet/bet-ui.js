@@ -8,7 +8,8 @@ export const data = {
     try {
       await interaction.deferReply({ ephemeral: true });
 
-      const channel = interaction.channel;
+      const channel = interaction.options.getChannel("channel") || interaction.channel;
+
       const bet_ui_image_url =
         interaction.options.getString("bet_ui_image_url") ||
         "https://bluespade.xyz/static/media/gmx-logo-with-name.e477745f19008fe6aa65.png";
@@ -77,7 +78,7 @@ export const slash_data = {
       name: "channel",
       description: "The channel you'd like to post the bet ui embed.",
       type: 7,
-      required: false,
+      required: true,
       channel_types: [0, 5, 13],
     },
     {
