@@ -1,9 +1,9 @@
 node_modules
 .vscord
 
+launch.json
+log
 
 .env
+env.json
 config.js
-
-launch.json
-src/log

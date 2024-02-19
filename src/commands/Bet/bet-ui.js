@@ -78,7 +78,7 @@ export const slash_data = {
       name: "channel",
       description: "The channel you'd like to post the bet ui embed.",
       type: 7,
-      required: true,
+      required: false,
       channel_types: [0, 5, 13],
     },
     {

@@ -10,13 +10,38 @@ const RPC_HTTP_PROVIDER_URL = process.env.RPC_HTTP_PROVIDER_URL;
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
+import { readdir } from "fs";
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
-const BET_ABI = require("./BET-ABI.json")
+const BET_ABI = require("./bet_contracts/BET-ABI.json")
 const ERC20_ABI = require("./ERC20-ABI.json")
 
 const MAX_TOKEN_TYPE = 3
 const MAX_AMOUNT_TYPE = 3
+
+const bet_contracts = new Map();
+readdir("./bet_contracts", { encoding: "utf-8" }, (err, files) => {
+	if (err) return console.error(err);
+
+	files
+		.filter((file) => file.endsWith(".json"))
+		.forEach((file) => {
+			const contractName = file.split(".")[0];
+			if (contractName == "ready") {
+
+			} else {
+				const contract = require(`./bet_contracts/${file}`);
+				
+				bet_contracts[contractName] = contract;
+				// bet_contracts.push({
+				// 	name : contractName,
+				// 	contract : contract
+				// });
+			}
+		});
+	
+	console.log("###", bet_contracts);
+})
 
 const web3 = new Web3(new Web3.providers.HttpProvider(RPC_HTTP_PROVIDER_URL))
 const ADMIN_PUBKEY = web3.eth.accounts.wallet.add(PRIVATE_KEY)[0].address

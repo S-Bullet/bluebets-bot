@@ -1,5 +1,7 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, TextInputStyle, ComponentType, EmbedBuilder, ButtonBuilder } from "discord.js";
 import * as util from "../util.js"
+import dotenv from "dotenv"
+dotenv.config('./../../.env');
 
 export default {
   name: "bet",
@@ -14,7 +16,7 @@ export default {
       if (type == "register") {
         const row = new ActionRowBuilder().setComponents(
           new ButtonBuilder()
-            .setURL(`https://app.bluespade.xyz/#/bluebet?discordid=${interaction.user.id}`)
+            .setURL(`${process.env.REGISTER_SERVER_URL}?discordid=${interaction.user.id}`)
             .setLabel("Yes")
             .setStyle("Link"),
           new ButtonBuilder()
