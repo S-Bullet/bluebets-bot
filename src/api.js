@@ -1,35 +1,23 @@
 import Web3 from "web3"
-// import {
-// 	RPC_HTTP_PROVIDER_URL,
-// 	CONTRACT_ADDRESS,
-// 	PRIVATE_KEY,
-// } from "./config.js"
-import dotenv from "dotenv"
-dotenv.config({ path : './../.env' });
-const RPC_HTTP_PROVIDER_URL = process.env.RPC_HTTP_PROVIDER_URL;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-
-import { readdir } from "fs";
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
-const bet_networks = require("./env.json")
-const BET_ABI = require("./bet_contracts/BET-ABI.json")
-const ERC20_ABI = require("./ERC20-ABI.json")
 
-const MAX_TOKEN_TYPE = 3
+const bet_networks = require("./env.json")
+// const ERC20_ABI = require("./ERC20-ABI.json")
+
+// const MAX_TOKEN_TYPE = 3
 const MAX_AMOUNT_TYPE = 3
 
 const bet_envs = new Map();
+bet_networks["BET_NETWORKS"].forEach((networkName) => {	
+	const networkData = bet_networks[networkName]
+	const contractABI = require(`./bet_contracts/${networkData["CONTRACT_ABI"]}`);
 
-bet_networks.forEach((network) => {	
-	const contractABI = require(`./bet_contracts/${network["CONTRACT_ABI"]}`);
+	const web3 = new Web3(new Web3.providers.HttpProvider(networkData["RPC_HTTP_PROVIDER_URL"]))
+	const ADMIN_PUBKEY = web3.eth.accounts.wallet.add(networkData["PRIVATE_KEY"])[0].address
+	const betContract = new web3.eth.Contract(contractABI, networkData["CONTRACT_ADDRESS"], { from: ADMIN_PUBKEY })
 
-	const web3 = new Web3(new Web3.providers.HttpProvider(network["RPC_HTTP_PROVIDER_URL"]))
-	const ADMIN_PUBKEY = web3.eth.accounts.wallet.add(network["PRIVATE_KEY"])[0].address
-	const betContract = new web3.eth.Contract(contractABI, network["CONTRACT_ADDRESS"], { from: ADMIN_PUBKEY })
-
-	bet_envs[network["NETWORK_NAME"]] = {
+	bet_envs[networkName] = {
 		web3,
 		ADMIN_PUBKEY,
 		betContract
