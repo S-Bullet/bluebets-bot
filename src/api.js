@@ -13,39 +13,35 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 import { readdir } from "fs";
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
+const bet_networks = require("./env.json")
 const BET_ABI = require("./bet_contracts/BET-ABI.json")
 const ERC20_ABI = require("./ERC20-ABI.json")
 
 const MAX_TOKEN_TYPE = 3
 const MAX_AMOUNT_TYPE = 3
 
-const bet_contracts = new Map();
-readdir("./bet_contracts", { encoding: "utf-8" }, (err, files) => {
-	if (err) return console.error(err);
+const bet_envs = new Map();
 
-	files
-		.filter((file) => file.endsWith(".json"))
-		.forEach((file) => {
-			const contractName = file.split(".")[0];
-			if (contractName == "ready") {
+bet_networks.forEach((network) => {	
+	const contractABI = require(`./bet_contracts/${network["CONTRACT_ABI"]}`);
 
-			} else {
-				const contract = require(`./bet_contracts/${file}`);
-				
-				bet_contracts[contractName] = contract;
-				// bet_contracts.push({
-				// 	name : contractName,
-				// 	contract : contract
-				// });
-			}
-		});
-	
-	console.log("###", bet_contracts);
+	const web3 = new Web3(new Web3.providers.HttpProvider(network["RPC_HTTP_PROVIDER_URL"]))
+	const ADMIN_PUBKEY = web3.eth.accounts.wallet.add(network["PRIVATE_KEY"])[0].address
+	const betContract = new web3.eth.Contract(contractABI, network["CONTRACT_ADDRESS"], { from: ADMIN_PUBKEY })
+
+	bet_envs[network["NETWORK_NAME"]] = {
+		web3,
+		ADMIN_PUBKEY,
+		betContract
+	}
 })
 
-const web3 = new Web3(new Web3.providers.HttpProvider(RPC_HTTP_PROVIDER_URL))
-const ADMIN_PUBKEY = web3.eth.accounts.wallet.add(PRIVATE_KEY)[0].address
-const betContract = new web3.eth.Contract(BET_ABI, CONTRACT_ADDRESS, { from: ADMIN_PUBKEY })
+const network_name = "POLYGON"
+const web3 = bet_envs[network_name]["web3"]
+const ADMIN_PUBKEY = bet_envs[network_name]["ADMIN_PUBKEY"]
+const betContract = bet_envs[network_name]["betContract"]
+
+// console.log("##", web3);
 
 export const getUserBalance = async (userId) => {
 	const { account, discordName, communityId, isRegistered } = await betContract.methods.userListByDiscordName(userId).call()
