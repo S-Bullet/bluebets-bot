@@ -11,7 +11,12 @@ export default {
 
       const { api } = interaction.client;
 
-      const type = interaction.customId.split("_")[1];
+      const bet_network_name = interaction.customId.split("_")[0];
+      const type = interaction.customId.split("_")[2];
+
+      api.setBetNetwork(bet_network_name);
+      
+      console.log("@@@@", bet_network_name, "###", type)
 
       if (type == "register") {
         const row = new ActionRowBuilder().setComponents(
@@ -39,6 +44,7 @@ export default {
         })
       } else if (type == "list-period") {
         const availableBettings = await api.getAvailableBettings()
+        //const availableBettings = await api.getAvailableBettings(bet_network_name)
 
         if (!availableBettings.length)
           return interaction.error("No betting is available");
@@ -65,6 +71,7 @@ export default {
         });
       } else if (type == "available-list") {
         const bettings = await api.getBettings()
+        //const bettings = await api.getBettings(bet_network_name)
 
         if (!bettings.length)
           return interaction.error("No betting is available");
@@ -103,6 +110,7 @@ export default {
         });
       } else if (type == "balance") {
         const balance = await api.getUserBalance(interaction.user.id)
+        //const balance = await api.getUserBalance(interaction.user.id, bet_network_name)
 
         const fields = [{
           name: `@${util.getDiscordName(interaction.client, interaction.user.id)}`,

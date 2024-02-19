@@ -25,11 +25,18 @@ bet_networks["BET_NETWORKS"].forEach((networkName) => {
 })
 
 const network_name = "POLYGON"
-const web3 = bet_envs[network_name]["web3"]
-const ADMIN_PUBKEY = bet_envs[network_name]["ADMIN_PUBKEY"]
-const betContract = bet_envs[network_name]["betContract"]
+var web3 = bet_envs[network_name]["web3"]
+var ADMIN_PUBKEY = bet_envs[network_name]["ADMIN_PUBKEY"]
+var betContract = bet_envs[network_name]["betContract"]
 
 // console.log("##", web3);
+
+export const setBetNetwork = (network_name) => {
+	console.log(`##check the ${network_name}`)
+	web3 = bet_envs[network_name]["web3"]
+	ADMIN_PUBKEY = bet_envs[network_name]["ADMIN_PUBKEY"]
+	betContract = bet_envs[network_name]["betContract"]
+}
 
 export const getUserBalance = async (userId) => {
 	const { account, discordName, communityId, isRegistered } = await betContract.methods.userListByDiscordName(userId).call()

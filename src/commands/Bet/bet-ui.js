@@ -17,6 +17,7 @@ export const data = {
     try {
       await interaction.deferReply({ ephemeral: true });
 
+      const bet_network_name = interaction.options.getString("network") || "POLYGON";
       const channel = interaction.options.getChannel("channel") || interaction.channel;
 
       const bet_ui_image_url =
@@ -35,32 +36,30 @@ export const data = {
 
       const row = new ActionRowBuilder().setComponents(
         new ButtonBuilder()
-          .setCustomId("bet_register")
+          .setCustomId(`${bet_network_name}_bet_register`)
           .setLabel("Register")
           .setStyle("Success"),
         new ButtonBuilder()
-          .setCustomId("bet_list-period")
+          .setCustomId(`${bet_network_name}_bet_list-period`)
           .setLabel("Join Bets")
           .setStyle("Success"),
         new ButtonBuilder()
-          .setCustomId("bet_available-list")
+          .setCustomId(`${bet_network_name}_bet_available-list`)
           .setLabel("Information")
           .setStyle("Primary"),
         new ButtonBuilder()
-          .setCustomId("bet_balance")
+          .setCustomId(`${bet_network_name}_bet_balance`)
           .setLabel("Balance")
           .setStyle("Secondary")
       );
 
+      const network_icon_img_url = bet_networks[bet_network_name]["COIN_IMG_URL"];
       channel.response({
         embeds: [
           {
-            title: `Bets`,
-            description:
-              bet_ui_embed_text ||
-              `
-  Press the button below to list or join the bets.
-  `,
+            thumbnail: network_icon_img_url ? { url: network_icon_img_url } : undefined,
+            title: `Bets on ${bet_network_name}`,
+            description: bet_ui_embed_text || 'Press the button below to list or join the bets.',
             color: interaction.client.defaultColor,
             image: bet_ui_image_url ? { url: bet_ui_image_url } : undefined,
           },
