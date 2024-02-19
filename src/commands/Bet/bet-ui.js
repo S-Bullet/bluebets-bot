@@ -1,6 +1,15 @@
 import { ActionRowBuilder, ButtonBuilder } from "discord.js";
 import urlRegex from "url-regex";
 
+import { createRequire } from "module"
+const require = createRequire(import.meta.url)
+const bet_networks = require("./../../env.json")
+
+const network_choices = [];
+bet_networks["BET_NETWORKS"].forEach((networkName) => {	
+  network_choices.push({ name: networkName, value: networkName });
+});
+
 export const data = {
   name: "bet-ui",
   description: "Sends the bet UI!",
@@ -74,6 +83,13 @@ export const slash_data = {
   owner_only: false,
   default_member_permissions: 8n,
   options: [
+    {
+      name: "network",
+      description: "The blockchain network where you'd like to bet.",
+      type: 3,
+      required: false,
+      choices: network_choices,
+    },
     {
       name: "channel",
       description: "The channel you'd like to post the bet ui embed.",
