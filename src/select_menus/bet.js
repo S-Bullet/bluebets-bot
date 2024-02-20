@@ -19,7 +19,6 @@ export default {
         const tokens = await api.getTokens()
 
         const periodId = parseInt(interaction.values[0])
-        const betting = await api.getBetting(periodId)
 
         const row = new ActionRowBuilder().setComponents(
           new StringSelectMenuBuilder()
@@ -31,7 +30,7 @@ export default {
                 return {
                   label: `${token.tokenName}`,
                   description: "Betting",
-                  value: `${parseInt(interaction.values[0])}_${token.tokenId}`,
+                  value: `${periodId}_${token.tokenId}`,
                 };
               })
             )
@@ -46,6 +45,7 @@ export default {
 
         const [periodId, tokenId] = interaction.values[0].split("_")
         const availableAmounts = await api.getAvailableAmounts(parseInt(periodId), parseInt(tokenId), interaction.user.id)
+        console.log("##availableAmounts :", availableAmounts)
 
         if (!availableAmounts.length)
           return interaction.error("No betting amount is available");
@@ -60,7 +60,7 @@ export default {
                 return {
                   label: `$${amount.amount}`,
                   description: "Betting",
-                  value: `${interaction.values[0]}_${amount.amountId}`,
+                  value: `${periodId}_${tokenId}_${amount.amountId}`,
                 };
               })
             )
@@ -71,7 +71,7 @@ export default {
           ephemeral: true,
         });
       } else if (type == "join") {
-        const [periodId, tokenId, amount] = interaction.values[0].split("_")
+        const [periodId, tokenId, amountId] = interaction.values[0].split("_")
 
         if (!await api.isBettingOpened(parseInt(periodId))) {
           return interaction.error("Betting is closed");

@@ -64,6 +64,11 @@ export default {
             description: "Are you sure you want to enter this bet?",
             fields: [
               {
+                name: "Period",
+                value: betting.periodString,
+                inline: true,
+              },
+              {
                 name: "Coin",
                 value: token.tokenName,
                 inline: true,
