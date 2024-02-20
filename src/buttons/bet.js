@@ -52,7 +52,7 @@ export default {
         if (!availableBettings.length)
           return interaction.error("No betting is available");
 
-        const row = new ActionRowBuilder().setComponents(
+        const row_period = new ActionRowBuilder().setComponents(
           new StringSelectMenuBuilder()
             .setCustomId(`bet_list-coin_${bet_network_name}`)
             .setPlaceholder("Select a betting")
@@ -68,8 +68,58 @@ export default {
             )
         );
 
+        const tokens = await api.getTokens()
+        const row_token = new ActionRowBuilder().setComponents(
+          new StringSelectMenuBuilder()
+            .setCustomId("bet_list-amount")
+            .setPlaceholder("Select token")
+            .setMaxValues(1)
+            .setOptions(
+              tokens.map((token) => {
+                return {
+                  label: `${token.tokenName}`,
+                  description: "Betting",
+                  value: `${periodId}_${token.tokenId}`,
+                };
+              })
+            )
+        );
+
+        const availableAmounts = await api.getAvailableAmounts(parseInt(periodId), parseInt(tokenId), interaction.user.id)
+
+        if (!availableAmounts.length)
+          return interaction.error("No betting amount is available");
+
+        const row_amount = new ActionRowBuilder().setComponents(
+          new StringSelectMenuBuilder()
+            .setCustomId("bet_join")
+            .setPlaceholder("Select amount")
+            .setMaxValues(1)
+            .setOptions(
+              availableAmounts.map((amount) => {
+                return {
+                  label: `$${amount.amount}`,
+                  description: "Betting",
+                  value: `${periodId}_${tokenId}_${amount.amountId}`,
+                };
+              })
+            )
+        );
+
+        const token = await api.getToken(tokenId);
+        const row_guess = new ActionRowBuilder().setComponents(
+          new TextInputBuilder()
+            .setCustomId("guess")
+            .setLabel(`Your Guess for ${token.tokenName}`)
+            .setMaxLength(10)
+            .setMinLength(1)
+            .setRequired(true)
+            .setStyle("Short")
+            .setPlaceholder("E.g 1250.5")
+        );
+
         interaction.response({
-          components: [row],
+          components: [row_period,row_token,row_amount,row_guess],
           ephemeral: true,
         });
       } else if (type == "available-list") {
