@@ -45,7 +45,6 @@ export default {
 
         const [periodId, tokenId] = interaction.values[0].split("_")
         const availableAmounts = await api.getAvailableAmounts(parseInt(periodId), parseInt(tokenId), interaction.user.id)
-        console.log("##availableAmounts :", availableAmounts)
 
         if (!availableAmounts.length)
           return interaction.error("No betting amount is available");

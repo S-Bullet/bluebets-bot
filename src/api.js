@@ -29,10 +29,7 @@ var web3 = bet_envs[network_name]["web3"]
 var ADMIN_PUBKEY = bet_envs[network_name]["ADMIN_PUBKEY"]
 var betContract = bet_envs[network_name]["betContract"]
 
-// console.log("##", web3);
-
 export const setBetNetwork = (network_name) => {
-	console.log(`##check the ${network_name}`)
 	web3 = bet_envs[network_name]["web3"]
 	ADMIN_PUBKEY = bet_envs[network_name]["ADMIN_PUBKEY"]
 	betContract = bet_envs[network_name]["betContract"]

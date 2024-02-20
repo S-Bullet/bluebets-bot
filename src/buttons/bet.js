@@ -3,6 +3,11 @@ import * as util from "../util.js"
 import dotenv from "dotenv"
 dotenv.config('./../../.env');
 
+import { createRequire } from "module"
+const require = createRequire(import.meta.url)
+const bet_networks = require("./../env.json")
+
+
 export default {
   name: "bet",
   async execute(interaction) {
@@ -16,12 +21,10 @@ export default {
 
       api.setBetNetwork(bet_network_name);
       
-      console.log("@@@@", bet_network_name, "###", type)
-
       if (type == "register") {
         const row = new ActionRowBuilder().setComponents(
           new ButtonBuilder()
-            .setURL(`${process.env.REGISTER_SERVER_URL}?discordid=${interaction.user.id}`)
+            .setURL(`${process.env.REGISTER_SERVER_URL}?discordid=${interaction.user.id}?networkchainid=${bet_networks[bet_network_name]["CHAIN_ID"]}`)
             .setLabel("Yes")
             .setStyle("Link"),
           new ButtonBuilder()
@@ -51,7 +54,7 @@ export default {
 
         const row = new ActionRowBuilder().setComponents(
           new StringSelectMenuBuilder()
-            .setCustomId("bet_list-coin")
+            .setCustomId(`bet_list-coin_${bet_network_name}`)
             .setPlaceholder("Select a betting")
             .setMaxValues(1)
             .setOptions(
